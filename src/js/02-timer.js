@@ -40,33 +40,34 @@ const options = {
       else {
             startBtn.disabled = false;
             const startDate = selectedDates[0].getTime();
-            const ms = startDate - options.defaultDate.getTime();
+            let ms = startDate - options.defaultDate.getTime();
             let sec = ms/1000;
           
-
-
-            let days = convertMs(ms).days;
-            let hours = convertMs(ms).hours;
-            let minutes = convertMs(ms).minutes;
-            let seconds = convertMs(ms).seconds;
-            console.log(days)
-
-            daysCounter.textContent = days;
-            hoursCounter.textContent = hours;
-            minutesCounter.textContent = minutes;
-            secondsCounter.textContent = seconds;
-            let remainingTime = {days,hours,minutes,seconds}
-            console.log(remainingTime);    
             startBtn.addEventListener("click", startCounting);
-            function startCounting() {
-                    for (let i = 0; i <= sec; i++) {
-                        function count() {
-                            sec = sec - 1;
-                            console.log(sec);
-                            setInterval(count, 1000);
+          function startCounting() { 
+              startBtn.disabled = true;
+              let timerId = null;
+              function count() {
+                  sec = sec - 1;
+                  ms = sec * 1000;
+                        if (sec <= 0) {
+                            ms = 0;
+                            Notiflix.Notify.success('The end');
+                            clearInterval(timerId);
                         };
-                        count();
-                    }               
+                    let days = convertMs(ms).days;
+                    let hours = convertMs(ms).hours;
+                    let minutes = convertMs(ms).minutes;
+                    let seconds = convertMs(ms).seconds;
+                  
+                    daysCounter.textContent = addLeadingZero(days);
+                    hoursCounter.textContent = addLeadingZero(hours);
+                    minutesCounter.textContent = addLeadingZero(minutes);
+                    secondsCounter.textContent = addLeadingZero(seconds);
+                    let remainingTime = {days,hours,minutes,seconds}
+                    console.log(remainingTime); 
+                };
+              timerId = setInterval(count, 1000);
             };
         }
   },
@@ -94,25 +95,10 @@ function convertMs(ms) {
     return { days, hours, minutes, seconds };
 };
 
-// console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-// console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-// console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+function addLeadingZero(value) {
+    if (value<10) {
+        value = value.toString().padStart(2,"0");
+        };
+    return value;          
+}
 
-        //   addLeadingZero({ days, hours, minutes, seconds });
-        //   function addLeadingZero(value) {
-        //         console.log(value);
-        //         const values = Object.values(value);
-        //         console.log(values);
-        //         for (let i of values) {
-        //             if (i<10) {
-        //                 i = i.toString().padStart(2, "0");
-        //                 values.push[i];
-        //             }
-        //       };
-        //       console.log(values);
-        //       return value;
-        //     // if (value.days<10) {
-        //     //     value.days = value.days.toString().padStart(2,"0");
-        //     //     console.log(value.days);
-        //     // }
-        //   }
